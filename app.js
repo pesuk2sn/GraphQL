@@ -11,11 +11,12 @@ loginButton.addEventListener("click", (e) => {
 })
 
 async function authentication(username, password){
+  const combination = username + ":" + password
   const response = await fetch('https://01.kood.tech/api/auth/signin',{
     method: 'POST',
     headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Basic '+btoa(username,password)
+            'Authorization': 'Basic '+btoa(combination)
     },
 });
 const JWTToken = await response.json();
