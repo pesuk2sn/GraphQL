@@ -1,3 +1,4 @@
+
 const loginForm = document.getElementById("login-form");
 const loginButton = document.getElementById("login-form-submit");
 const loginErrorMsg = document.getElementById("login-error-msg");
@@ -36,8 +37,6 @@ return JWTToken
 async function getQuery(username,password){
   const JWTToken = await authentication(username,password)
   try {
-    
-  
   const response = await fetch('https://01.kood.tech/api/graphql-engine/v1/graphql',{
     method: 'POST',
     headers: {
@@ -50,14 +49,21 @@ async function getQuery(username,password){
       throw new Error()
     }
     const queryData = await response.json()
-    console.log(queryData)} 
+    loadScript('views/homepage.js');
+  } 
     catch (error) {
       alert('Failed to fetch data');
     }
   }
 
 
-
+  function loadScript(src) {
+    const script = document.createElement('script');
+    script.src = src;
+    script.type = 'text/javascript';
+    document.body.appendChild(script);
+    console.log(`${src} has been loaded successfully.`);
+  }
 let data 
 const query = "query {transaction{id}}"
 
