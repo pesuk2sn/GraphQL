@@ -1,4 +1,7 @@
+const express = require('express');
+const app = express();
 
+app.use(express.static('js'));
 const loginForm = document.getElementById("login-form");
 const loginButton = document.getElementById("login-form-submit");
 const loginErrorMsg = document.getElementById("login-error-msg");
@@ -49,7 +52,7 @@ async function getQuery(username,password){
       throw new Error()
     }
     const queryData = await response.json()
-    loadScript('views/homepage.js');
+    loadScript('homepage.js');
   } 
     catch (error) {
       alert('Failed to fetch data');
