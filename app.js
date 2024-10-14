@@ -1,19 +1,17 @@
 const express = require('express');
+const session = require('express-session')
 const app = express();
+const path = require('path');
 
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
+app.use(express.json());
 app.use(express.static('js'));
-const loginForm = document.getElementById("login-form");
-const loginButton = document.getElementById("login-form-submit");
-const loginErrorMsg = document.getElementById("login-error-msg");
-
-
-loginButton.addEventListener("click", (e) => {
-    e.preventDefault();
-    const username = loginForm.username.value;
-    const password = loginForm.password.value;
-    getQuery(username,password)
-
-})
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'static')));
 
 async function authentication(username, password){
  
@@ -33,7 +31,7 @@ if (!response.ok){
 const JWTToken = await response.json();
 return JWTToken
 } catch (error) {
-  alert('Invalid credentials');
+  return null
   }
 }
 
@@ -52,10 +50,10 @@ async function getQuery(username,password){
       throw new Error()
     }
     const queryData = await response.json()
-    loadScript('homepage.js');
+    return queryData
   } 
     catch (error) {
-      alert('Failed to fetch data');
+      return null
     }
   }
 
@@ -82,3 +80,39 @@ async function test() {
     console.log(data[i])
     } 
 }
+
+
+app.get('/', function(request,response){
+  response.sendFile(path.join(__dirname + '/index.html'))
+})
+
+app.post('/auth',async function(request,response){
+  let username = request.body.username
+  let password = request.body.password
+  if (username && password){
+    const queryData = await getQuery(username, password)
+    if (queryData){
+    request.session.loggedIn = true
+    request.session.queryData = queryData
+    console.log("Logged in succesful")
+    response.redirect('/home')
+    }else{
+    response.send('Incorrect username and/or password')
+  }
+} else{
+  response.send('Please provide username and password')
+  }
+  }
+)
+
+app.get('/home', (request, response) => {
+  if (request.session.loggedIn){
+    response.send('Welcome home')
+  } else{
+    response.send('Please login to view this page')
+  }
+  response.end()
+})
+
+
+app.listen(8080)
