@@ -8,6 +8,7 @@ app.use(session({
 	resave: true,
 	saveUninitialized: true
 }));
+app.set('view engine', 'ejs')
 app.use(express.json());
 app.use(express.static('js'));
 app.use(express.urlencoded({ extended: true }));
@@ -57,29 +58,23 @@ async function getQuery(username,password){
     }
   }
 
-
-  function loadScript(src) {
-    const script = document.createElement('script');
-    script.src = src;
-    script.type = 'text/javascript';
-    document.body.appendChild(script);
-    console.log(`${src} has been loaded successfully.`);
+  const query = `
+  query {
+    transaction {
+      id
+      type
+      amount
+      userId
+      createdAt
+      path
+      user {
+        id
+        login
+      }
+    }
   }
-let data 
-const query = "query {transaction{id}}"
+`;
 
-
-async function test() {
-  data = await getData()
-  console.log(data)
-
- // console.log(data.data.user[0])
-  //const user = data.data.user[0]
-  //console.log(user.id)
-  for (var i = 0; i < data.length; i++) {
-    console.log(data[i])
-    } 
-}
 
 
 app.get('/', function(request,response){
@@ -90,11 +85,11 @@ app.post('/auth',async function(request,response){
   let username = request.body.username
   let password = request.body.password
   if (username && password){
-    const queryData = await getQuery(username, password)
+    const queryData = await getQuery(username, password,query)
     if (queryData){
     request.session.loggedIn = true
     request.session.queryData = queryData
-    console.log("Logged in succesful")
+    console.log("Login succesful")
     response.redirect('/home')
     }else{
     response.send('Incorrect username and/or password')
@@ -107,7 +102,20 @@ app.post('/auth',async function(request,response){
 
 app.get('/home', (request, response) => {
   if (request.session.loggedIn){
-    response.send('Welcome home')
+    const transactions = request.session.queryData
+    transactions.forEach(transaction => {
+      console.log(`Transaction ID: ${transaction.id}`);
+      console.log(`Type: ${transaction.type}`);
+      console.log(`Amount: ${transaction.amount}`);
+      console.log(`User ID: ${transaction.userId}`);
+      console.log(`Created At: ${transaction.createdAt}`);
+      console.log(`Path: ${transaction.path}`);
+      console.log(`User ID: ${transaction.user.id}`);
+      console.log(`User Login: ${transaction.user.login}`);
+      console.log('------------------------------------');
+    });
+    //console.log(queryData)
+    response.render('home', {queryData})
   } else{
     response.send('Please login to view this page')
   }
