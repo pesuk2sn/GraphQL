@@ -36,7 +36,7 @@ return JWTToken
   }
 }
 
-async function getQuery(username,password){
+async function getQuery(username,password, query){
   const JWTToken = await authentication(username,password)
   try {
   const response = await fetch('https://01.kood.tech/api/graphql-engine/v1/graphql',{
@@ -102,20 +102,7 @@ app.post('/auth',async function(request,response){
 
 app.get('/home', (request, response) => {
   if (request.session.loggedIn){
-    const transactions = request.session.queryData
-    transactions.forEach(transaction => {
-      console.log(`Transaction ID: ${transaction.id}`);
-      console.log(`Type: ${transaction.type}`);
-      console.log(`Amount: ${transaction.amount}`);
-      console.log(`User ID: ${transaction.userId}`);
-      console.log(`Created At: ${transaction.createdAt}`);
-      console.log(`Path: ${transaction.path}`);
-      console.log(`User ID: ${transaction.user.id}`);
-      console.log(`User Login: ${transaction.user.login}`);
-      console.log('------------------------------------');
-    });
-    //console.log(queryData)
-    response.render('home', {queryData})
+    response.render('home', {transactions: request.session.queryData.data.transaction})
   } else{
     response.send('Please login to view this page')
   }

@@ -7,11 +7,31 @@
   </head>
 
   <body>
-    <ul>
-      <% queryData.forEach(transcaction=> { %>
-        <li>ID: <%= transaction.id  %>
-        </li>
-        <% }) %>
-    </ul>  </body>
+    <h1>Transaction List for </h1>
+
+  <% if (transactions.length > 0) { %>
+    <% transactions.forEach(function(transaction) { %>
+      <div>
+        <h2>Transaction ID: <%= transaction.id %></h2>
+        <ul>
+          <li><strong>Type:</strong> <%= transaction.type %></li>
+          <li><strong>Amount:</strong> <%= transaction.amount %></li>
+          <li><strong>User ID:</strong> <%= transaction.userId %></li>
+          <li><strong>Created At:</strong> <%= transaction.createdAt %></li>
+          <li><strong>Path:</strong> <%= transaction.path %></li>
+        </ul>
+
+        <h3>User Information</h3>
+        <ul>
+          <li><strong>User ID:</strong> <%= transaction.user.id %></li>
+          <li><strong>Login:</strong> <%= transaction.user.login %></li>
+        </ul>
+        <hr />
+      </div>
+    <% }); %>
+  <% } else { %>
+    <p>No transactions found</p>
+  <% } %>
+</body>
 </html>
  
