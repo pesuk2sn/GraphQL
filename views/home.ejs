@@ -4,34 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GraphQL</title>
+    <style>
+      svg {
+        border: 1px solid black;
+        width: 400px;
+        height: auto;
+      }
+      text {
+        font-family: Arial, sans-serif;
+        font-size: 30px;
+      }
+    </style>
   </head>
 
   <body>
-    <h1>Transaction List for </h1>
+    <svg id="user-info-svg" width="200" height="<%= 200 %>">
+      <!-- Loop through the users and display their ID and login -->
+        <text x="20" y="30">User ID: <%= transactions[0].user.id %></text>
+        <text x="20" y="60">User login: <%= transactions[0].user.login %></text>
 
-  <% if (transactions.length > 0) { %>
-    <% transactions.forEach(function(transaction) { %>
-      <div>
-        <h2>Transaction ID: <%= transaction.id %></h2>
-        <ul>
-          <li><strong>Type:</strong> <%= transaction.type %></li>
-          <li><strong>Amount:</strong> <%= transaction.amount %></li>
-          <li><strong>User ID:</strong> <%= transaction.userId %></li>
-          <li><strong>Created At:</strong> <%= transaction.createdAt %></li>
-          <li><strong>Path:</strong> <%= transaction.path %></li>
-        </ul>
-
-        <h3>User Information</h3>
-        <ul>
-          <li><strong>User ID:</strong> <%= transaction.user.id %></li>
-          <li><strong>Login:</strong> <%= transaction.user.login %></li>
-        </ul>
-        <hr />
-      </div>
-    <% }); %>
-  <% } else { %>
-    <p>No transactions found</p>
-  <% } %>
-</body>
+    </svg>
+  </body>
 </html>
  
