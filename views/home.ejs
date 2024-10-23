@@ -4,26 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GraphQL</title>
-    <style>
-      svg {
-        border: 1px solid black;
-        width: 400px;
-        height: auto;
-      }
-      text {
-        font-family: Arial, sans-serif;
-        font-size: 30px;
-      }
-    </style>
   </head>
 
   <body>
-    <svg id="user-info-svg" width="200" height="<%= 200 %>">
-      <!-- Loop through the users and display their ID and login -->
-        <text x="20" y="30">User ID: <%= transactions[0].user.id %></text>
-        <text x="20" y="60">User login: <%= transactions[0].user.login %></text>
 
-    </svg>
+    <svg width="500" height="500" xmlns="http://www.w3.org/2000/svg" style="border:1px solid black">
+      <line x1="5" y1="350" x2="5" y2="0" style="stroke:black;stroke-width:1" />
+      <line x1="5" y1="350" x2="1000" y2="350" style="stroke:black;stroke-width:1" />
+      <% transactions.forEach(function(transaction, index) { %>
+        <text x="<%= 30 + (index * 100) %>" y="150" font-family="Arial" font-size="12" style="text-anchor:middle">
+          <%= (Math.round(transaction.amount/1000  * 100)/100).toFixed(2)%>
+        </text>
+        <text x="<%= 30 + (index * 100) %>" y="300" font-family="Arial" font-size="12" style="text-anchor:middle" transform="rotate(45,10,10)">
+          <%= transaction.object.name %>
+        </text>
+        <rect width="20" height="<%= (transaction.amount/1000) %> "x="<%= 10 + (index * 35) %>"  y="200"  fill="blue" ></rect>
+      <% }); %>
+    </svg> 
   </body>
 </html>
  

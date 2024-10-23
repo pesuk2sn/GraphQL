@@ -12,7 +12,7 @@ app.set('view engine', 'ejs')
 app.use(express.json());
 app.use(express.static('js'));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 async function authentication(username, password){
  
@@ -60,16 +60,16 @@ async function getQuery(username,password, query){
 
   const query = `
   query {
-    transaction {
-      id
-      type
+  transaction(where: { type: { _eq: "xp" }, object: { type: { _eq: "project" }}}){
       amount
-      userId
-      createdAt
-      path
       user {
         id
         login
+      }
+      object {
+      id
+      name
+      attrs
       }
     }
   }
@@ -102,7 +102,9 @@ app.post('/auth',async function(request,response){
 
 app.get('/home', (request, response) => {
   if (request.session.loggedIn){
-    response.render('home', {transactions: request.session.queryData.data.transaction})
+    const transactions = request.session.queryData.data.transaction
+    const objects = request.session.queryData.data.transaction.object
+    response.render('home', {transactions})
   } else{
     response.send('Please login to view this page')
   }
