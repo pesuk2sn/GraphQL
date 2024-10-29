@@ -12,15 +12,44 @@
       <line x1="5" y1="350" x2="5" y2="0" style="stroke:black;stroke-width:1" />
       <line x1="5" y1="350" x2="1000" y2="350" style="stroke:black;stroke-width:1" />
       <% transactions.forEach(function(transaction, index) { %>
-        <text x="<%= 30 + (index * 100) %>" y="150" font-family="Arial" font-size="12" style="text-anchor:middle">
+        <text x="<%= 7 + (index * 30)  %>" y="<%= 345-(transaction.amount/1000)%>" font-family="Arial" font-size="12" style="text-anchor:start">
           <%= (Math.round(transaction.amount/1000  * 100)/100).toFixed(2)%>
         </text>
-        <text x="<%= 30 + (index * 100) %>" y="300" font-family="Arial" font-size="12" style="text-anchor:middle" transform="rotate(45,10,10)">
+        <text x="<%= 15 + (index * 30) %>" y="<%= 410 + (transaction.object.name.length)%>" font-family="Arial" font-size="12" transform="rotate(-90 <%= 10 + (index * 30) %> <%= 400 + (transaction.object.name.length)%> )" style="text-anchor:middle">
           <%= transaction.object.name %>
         </text>
-        <rect width="20" height="<%= (transaction.amount/1000) %> "x="<%= 10 + (index * 35) %>"  y="200"  fill="blue" ></rect>
-      <% }); %>
+        <rect width="15" height="<%= (transaction.amount/1000) %> "x="<%= 7 + (index * 30) %>"  y="<%= 350-(transaction.amount/1000)%>"  fill="blue" ></rect>
+        <% }); %>
     </svg> 
+    <svg width="500" height="500" x="600" y="0" xmlns="http://www.w3.org/2000/svg" style="border:1px solid black">
+      <circle r="200" cx="250" cy="250" fill="blue" />
+      <%
+      // Initialize numbers
+      const amount = {};
+      
+      // Count occurrences of each language
+      transactions.forEach(function(transaction) {
+        const language = transaction.object.attrs.language 
+        if (language) {
+                if (amount[language]) {
+                    amount[language] += 1;
+                } else {
+                    amount[language] = 1;
+                }
+            }
+        });
+    
+      
+      // Convert counter to JSON format
+      const counterText = JSON.stringify(amount);
+  %>        
+
+  <text x="0" y="200" font-family="Arial" font-size="12" style="text-anchor:start">
+      <%= counterText %>
+  </text>
+    </svg> 
+
+
   </body>
 </html>
  
