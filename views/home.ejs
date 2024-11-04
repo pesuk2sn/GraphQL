@@ -20,9 +20,8 @@
         </text>
         <rect width="15" height="<%= (transaction.amount/1000) %> "x="<%= 7 + (index * 30) %>"  y="<%= 350-(transaction.amount/1000)%>"  fill="blue" ></rect>
         <% }); %>
-    </svg> 
-    <svg width="500" height="500" x="600" y="0" xmlns="http://www.w3.org/2000/svg" style="border:1px solid black">
-      <%
+    </svg>     
+     <%
       // Initialize numbers
       const amount = {};
       let totalCount = 0
@@ -44,16 +43,34 @@
         for (const language in amount) {
             percentages[language] = ((amount[language] / totalCount) * 100).toFixed(2); // Percentage with two decimal places
         }  
-
+        %>
+    <svg width="500" height="500" x="600" y="0" xmlns="http://www.w3.org/2000/svg" style="border:1px solid black">
+ 
+      <circle r="200" cx="250" cy="250" fill="white" />
+  <g id="pie-chart" transform="translate(250, 250)"> 
+    <% 
+    let cumulativeAngle = 0; // This will keep track of the cumulative angle for the pie chart
+    const colors = ["tomato", "orange", "green", "blue", "purple"]; // Colors for each sector
+    let colorIndex = 0; // Index for colors array
+    for (const language in percentages) { 
+        const percentage = percentages[language]; 
+        const angle = (percentage / 100) * 360; // Convert percentage to angle
+        const arcLength = (percentage / 100) * (2 * Math.PI * 200); // Calculate arc length for stroke-dasharray
+        const gap = 2 * Math.PI * 200 - arcLength; // The remaining length of the circle
         
-  %>    
-
-   
-  
-
-
-    <!-- Optional background circle for reference -->
-    <circle r="200" cx="250" cy="250" fill="none" stroke="lightgray" stroke-width="20" />
+        // Create a sector circle element
+        %>
+        <circle r="200" cx="0" cy="0" fill="none"
+                stroke="<%= colors[colorIndex % colors.length] %>"
+                stroke-width="20"
+                stroke-dasharray="<%= arcLength %> <%= gap %>"
+                transform="rotate(<%= cumulativeAngle %>)" />
+        <% 
+        cumulativeAngle += angle; // Update cumulative angle for the next sector
+        colorIndex++; // Move to the next color
+    } 
+    %>
+  </g>
   </svg> 
 
   </body>
