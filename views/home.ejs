@@ -22,10 +22,10 @@
         <% }); %>
     </svg> 
     <svg width="500" height="500" x="600" y="0" xmlns="http://www.w3.org/2000/svg" style="border:1px solid black">
-      <circle r="200" cx="250" cy="250" fill="blue" />
       <%
       // Initialize numbers
       const amount = {};
+      let totalCount = 0
       
       // Count occurrences of each language
       transactions.forEach(function(transaction) {
@@ -37,18 +37,24 @@
                     amount[language] = 1;
                 }
             }
+            totalCount++
         });
-    
-      
-      // Convert counter to JSON format
-      const counterText = JSON.stringify(amount);
-  %>        
 
-  <text x="0" y="200" font-family="Arial" font-size="12" style="text-anchor:start">
-      <%= counterText %>
-  </text>
-    </svg> 
+        const percentages = {};
+        for (const language in amount) {
+            percentages[language] = ((amount[language] / totalCount) * 100).toFixed(2); // Percentage with two decimal places
+        }  
 
+        
+  %>    
+
+   
+  
+
+
+    <!-- Optional background circle for reference -->
+    <circle r="200" cx="250" cy="250" fill="none" stroke="lightgray" stroke-width="20" />
+  </svg> 
 
   </body>
 </html>
