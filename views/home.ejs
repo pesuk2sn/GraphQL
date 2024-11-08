@@ -7,8 +7,11 @@
   </head>
 
   <body>
+   
 
     <svg width="500" height="500" xmlns="http://www.w3.org/2000/svg" style="border:1px solid black">
+      <text x="40" y="50" font-familiy="Arial" font-size="20" font-weight="bold">XP-tracker</text>
+
       <line x1="5" y1="350" x2="5" y2="0" style="stroke:black;stroke-width:1" />
       <line x1="5" y1="350" x2="1000" y2="350" style="stroke:black;stroke-width:1" />
       <% transactions.forEach(function(transaction, index) { %>
@@ -22,11 +25,9 @@
         <% }); %>
     </svg>     
      <%
-      // Initialize numbers
       const amount = {};
       let totalCount = 0
       
-      // Count occurrences of each language
       transactions.forEach(function(transaction) {
         const language = transaction.object.attrs.language 
         if (language) {
@@ -41,30 +42,34 @@
 
         const percentages = {};
         for (const language in amount) {
-            percentages[language] = ((amount[language] / totalCount) * 100).toFixed(2); // Percentage with two decimal places
+            percentages[language] = ((amount[language] / totalCount) * 100).toFixed(2); 
         }  
         %>
     <svg width="500" height="500" x="600" y="0" xmlns="http://www.w3.org/2000/svg" style="border:1px solid black">
  
-      <circle r="200" cx="250" cy="250" fill="white" />
-  <g id="pie-chart" transform="translate(250, 250)"> 
+      <circle r="150" cx="220" cy="250" fill="white" />
+  <g id="pie-chart" transform="translate(200, 250)">
+    <text x="-150" y="-200" font-familiy="Arial" font-size="20" font-weight="bold">Languages</text>
     <% 
-    let cumulativeAngle = 0; // This will keep track of the cumulative angle for the pie chart
-    const colors = ["tomato", "orange", "green", "blue", "purple"]; // Colors for each sector
-    let colorIndex = 0; // Index for colors array
-    for (const language in percentages) { 
+    
+    let cumulativeAngle = 0;
+    let colorIndex = 0;
+    var colors = ['gold', 'blue', 'firebrick','forestgreen','yellow','snow','tan','pink','purple','lime'];
+    for (const language in percentages) {     
+        var color = colors[colorIndex]
         const percentage = percentages[language]; 
-        const angle = (percentage / 100) * 360; // Convert percentage to angle
-        const arcLength = (percentage / 100) * (2 * Math.PI * 200); // Calculate arc length for stroke-dasharray
-        const gap = 2 * Math.PI * 200 - arcLength; // The remaining length of the circle
-        
-        // Create a sector circle element
+        const angle = (percentage / 100) * 360; 
+        const arcLength = (percentage / 100) * (2 * Math.PI * 200); 
+        const gap = 2 * Math.PI * 200 - arcLength; 
+     
         %>
-        <circle r="200" cx="0" cy="0" fill="none"
-                stroke="<%= colors[colorIndex % colors.length] %>"
-                stroke-width="20"
+        <circle r="75" cx="0" cy="0" fill="none"
+                stroke="<%= color %>"
+                stroke-width="150"
                 stroke-dasharray="<%= arcLength %> <%= gap %>"
-                transform="rotate(<%= cumulativeAngle %>)" />
+                transform="rotate(-90)" />
+            <rect width="10" height="10" x="155" y="<%=-210+colorIndex*20%>" fill="<%=color%>"></rect>
+            <text x="170" y="<%=-200+colorIndex*20%>" font-family="Arial" font-size="12"><%=language%></text>
         <% 
         cumulativeAngle += angle; // Update cumulative angle for the next sector
         colorIndex++; // Move to the next color
@@ -72,7 +77,16 @@
     %>
   </g>
   </svg> 
-
+  <svg width="250" height="250" x="1100" y="0" xmlns="http://www.w3.org/2000/svg" style="border:1px solid black">
+    <text x="40" y="50" font-familiy="Arial" font-size="20" font-weight="bold">User info</text>
+    <text x="40" y="80" font-familiy="Arial" font-size="12">Full name: <%=transactions[0].user.firstName%> <%=transactions[0].user.lastName%></text>
+    <text x="40" y="110" font-familiy="Arial" font-size="12">Email: <%=transactions[0].user.email%></text>
+    <text x="40" y="140" font-familiy="Arial" font-size="12">Login name: <%=transactions[0].user.login%></text>
+    <text x="40" y="170" font-familiy="Arial" font-size="12">User ID: <%=transactions[0].user.id%></text>
+  </svg>
+ <form action="/logout" method="get">
+      <button type="submit">Logout</button>
+    </form>
   </body>
 </html>
  

@@ -42,18 +42,25 @@ async function getQuery(username,password, query){
   const response = await fetch('https://01.kood.tech/api/graphql-engine/v1/graphql',{
     method: 'POST',
     headers: {
-            'Content-type': 'applcation/json',
+            'Content-type': 'application/json',
             'Authorization': `Bearer ${JWTToken}`
     },
     body: JSON.stringify({query}),
     });
     if (!response.ok){
-      throw new Error()
+      console.log("Failed to fetch data: ", response.status, response.statusText);
+      return null; 
     }
     const queryData = await response.json()
-    return queryData
+    if (queryData && queryData.data && Object.keys(queryData.data).length > 0) {
+      return queryData;
+    } else {
+      console.log("Invalid credentials or empty query data");
+      return null; 
+    }
   } 
     catch (error) {
+      console.log("Error in getQuery: ", error.message);
       return null
     }
   }
@@ -61,8 +68,11 @@ async function getQuery(username,password, query){
   const query = `
   query {
   transaction(where: { type: { _eq: "xp" }, object: { type: { _eq: "project" }}}){
-      amount
+  amount
       user {
+      firstName
+      lastName
+      email
         id
         login
       }
@@ -81,6 +91,18 @@ app.get('/', function(request,response){
   response.sendFile(path.join(__dirname + '/index.html'))
 })
 
+app.get('/logout', (request, response) => {
+  request.session.destroy((err) => {
+    if (err) {
+      return response.status(500).send('Failed to log out');
+    }
+    console.log("Logout succesful")
+
+    response.redirect('/');
+  });
+});
+
+
 app.post('/auth',async function(request,response){
   let username = request.body.username
   let password = request.body.password
@@ -93,8 +115,9 @@ app.post('/auth',async function(request,response){
     response.redirect('/home')
     }else{
     response.send('Incorrect username and/or password')
-  }
-} else{
+}
+  } 
+  else{
   response.send('Please provide username and password')
   }
   }
